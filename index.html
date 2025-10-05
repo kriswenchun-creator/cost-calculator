@@ -511,7 +511,7 @@
                         <div class="upload-placeholder" id="uploadPlaceholder">
                             <div class="upload-icon">📸</div>
                             <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.875rem;">Click to upload image</p>
-                            <p style="font-size: 0.75rem; color: var(--text-secondary);">PNG/JPG, Max 200KB</p>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary);">PNG/JPG, Max 2MB</p>
                         </div>
                         <input type="file" id="productImage" class="file-input" accept="image/*">
                         <img id="imagePreview" class="image-preview" alt="Product Preview">
@@ -715,6 +715,34 @@
             }
         }
 
+        function compressImage(dataUrl, callback) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 800;
+                
+                if (width > height && width > maxSize) {
+                    height = (height * maxSize) / width;
+                    width = maxSize;
+                } else if (height > maxSize) {
+                    width = (width * maxSize) / height;
+                    height = maxSize;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                callback(compressedDataUrl);
+            };
+            img.src = dataUrl;
+        }
+
         function setupImagePreview() {
             const fileInput = document.getElementById('productImage');
             const previewImage = document.getElementById('imagePreview');
@@ -726,14 +754,22 @@
                 const file = event.target.files[0];
 
                 if (file) {
+                    if (file.size > 2 * 1024 * 1024) {
+                        showAlert('Image too large! Please select an image smaller than 2MB.', 'error');
+                        fileInput.value = '';
+                        return;
+                    }
+
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        currentImageData = e.target.result;
-                        previewImage.src = currentImageData;
-                        previewImage.classList.add('show');
-                        if (uploadPlaceholder) {
-                            uploadPlaceholder.classList.add('hide');
-                        }
+                        compressImage(e.target.result, (compressedData) => {
+                            currentImageData = compressedData;
+                            previewImage.src = compressedData;
+                            previewImage.classList.add('show');
+                            if (uploadPlaceholder) {
+                                uploadPlaceholder.classList.add('hide');
+                            }
+                        });
                     };
                     reader.readAsDataURL(file);
                 } else {
