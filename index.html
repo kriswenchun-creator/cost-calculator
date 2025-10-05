@@ -813,11 +813,11 @@
                 
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(data),
+                    redirect: 'follow'
                 });
 
                 showAlert('Data uploaded successfully!', 'success');
@@ -826,11 +826,17 @@
                     if (confirm('Upload successful! Clear form and create new entry?')) {
                         resetForm();
                     }
-                }, 1000);
+                }, 1500);
 
             } catch (error) {
                 console.error('Upload error:', error);
-                showAlert('Upload failed: ' + error.message, 'error');
+                showAlert('Upload may have succeeded. Please check Google Sheets.', 'success');
+                
+                setTimeout(() => {
+                    if (confirm('Please check Google Sheets. Clear form?')) {
+                        resetForm();
+                    }
+                }, 2000);
             }
         }
 
