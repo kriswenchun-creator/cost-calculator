@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>產品成本計算器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Product Cost Calculator</title>
     <style>
         * {
             margin: 0;
@@ -30,10 +30,10 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 2rem;
+            padding: 1rem;
             color: var(--text-primary);
         }
 
@@ -44,34 +44,34 @@
 
         .header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             color: white;
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             opacity: 0.9;
         }
 
         .main-card {
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             box-shadow: var(--shadow-xl);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .card-title {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             color: var(--text-primary);
             display: flex;
             align-items: center;
@@ -81,18 +81,18 @@
         .card-title::before {
             content: '';
             width: 4px;
-            height: 24px;
+            height: 20px;
             background: linear-gradient(180deg, var(--primary), var(--secondary));
             border-radius: 2px;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-label {
             display: block;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 0.5rem;
@@ -102,7 +102,7 @@
 
         .form-input {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.875rem 1rem;
             border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1rem;
@@ -118,16 +118,67 @@
         }
 
         .form-input.large {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            padding: 1rem 1.25rem;
+            padding: 1rem 1.125rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-main);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .image-summary-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+            margin-top: 1.25rem;
         }
 
         .image-upload-container {
@@ -143,21 +194,20 @@
             background: var(--bg-main);
             transition: all 0.2s ease;
             cursor: pointer;
-            min-height: 180px;
+            min-height: 160px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .image-upload:hover {
-            border-color: var(--primary);
-            background: white;
+        .image-upload:active {
+            transform: scale(0.98);
         }
 
         .image-preview {
-            max-width: 150px;
-            max-height: 150px;
+            max-width: 140px;
+            max-height: 140px;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -181,26 +231,26 @@
 
         .summary-cards {
             display: grid;
-            gap: 1rem;
+            gap: 0.875rem;
         }
 
         .summary-item {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            padding: 1.25rem;
+            padding: 1.125rem;
             border-radius: 12px;
             color: white;
             box-shadow: var(--shadow-lg);
         }
 
         .summary-label {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             opacity: 0.9;
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
 
         .summary-value {
-            font-size: 1.75rem;
+            font-size: 1.625rem;
             font-weight: 700;
             display: flex;
             align-items: baseline;
@@ -208,7 +258,7 @@
         }
 
         .summary-value .currency {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             opacity: 0.8;
         }
 
@@ -223,7 +273,7 @@
         .table-card {
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             box-shadow: var(--shadow-xl);
             overflow: hidden;
         }
@@ -231,10 +281,12 @@
         .table-wrapper {
             overflow-x: auto;
             margin-top: 1rem;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
+            min-width: 600px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -242,15 +294,13 @@
         th {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 1rem;
+            padding: 0.875rem 0.75rem;
             text-align: left;
             font-weight: 600;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            white-space: nowrap;
         }
 
         th:first-child {
@@ -262,25 +312,23 @@
         }
 
         td {
-            padding: 1rem;
+            padding: 0.875rem 0.75rem;
             border-bottom: 1px solid var(--border);
             background: white;
+            font-size: 0.875rem;
         }
 
         tr:last-child td {
             border-bottom: none;
         }
 
-        tr:hover td {
-            background: var(--bg-main);
-        }
-
         .table-select {
             width: 100%;
-            padding: 0.5rem 0.75rem;
+            min-width: 100px;
+            padding: 0.625rem 0.5rem;
             border: 1px solid var(--border);
             border-radius: 6px;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             background: white;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -293,8 +341,8 @@
         }
 
         .table-input {
-            width: 80px;
-            padding: 0.5rem 0.75rem;
+            width: 70px;
+            padding: 0.625rem 0.5rem;
             border: 1px solid var(--border);
             border-radius: 6px;
             font-size: 0.875rem;
@@ -314,16 +362,6 @@
             color: var(--primary);
         }
 
-        @media (max-width: 1024px) {
-            .image-summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-        }
-
         .upload-icon {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
@@ -333,45 +371,156 @@
         .file-input {
             display: none;
         }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert-loading {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2.25rem;
+            }
+
+            .header p {
+                font-size: 1.05rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .image-summary-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+
+            .table-wrapper {
+                margin-top: 1rem;
+            }
+
+            th, td {
+                padding: 1rem;
+            }
+
+            th {
+                font-size: 0.875rem;
+            }
+
+            td {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                padding: 2rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .summary-value {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .main-card {
+                padding: 1rem;
+            }
+
+            .form-input.large {
+                font-size: 1rem;
+            }
+
+            .summary-value {
+                font-size: 1.375rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🍱 產品成本計算器</h1>
-            <p>精準計算每一道料理的成本與利潤</p>
+            <h1>Product Cost Calculator</h1>
+            <p>Calculate costs and profits for every dish accurately</p>
         </div>
 
+        <div id="alertContainer"></div>
+
         <div class="main-card">
-            <h2 class="card-title">產品資訊</h2>
+            <h2 class="card-title">Product Information</h2>
             
             <div class="form-group">
-                <label class="form-label">產品名稱 (EN)</label>
-                <input type="text" id="productName" class="form-input large" value="Custom Dessert" maxlength="60" placeholder="輸入產品名稱...">
+                <label class="form-label">Product Name (EN)</label>
+                <input type="text" id="productName" class="form-input large" value="Custom Dessert" maxlength="60" placeholder="Enter product name...">
             </div>
 
             <div class="form-group">
-                <label class="form-label">產品售價 ($)</label>
+                <label class="form-label">Selling Price ($)</label>
                 <input type="number" id="sellingPrice" class="form-input large" value="15.00" min="0" step="0.01" placeholder="0.00">
             </div>
 
             <div class="image-summary-grid">
                 <div class="image-upload-container">
-                    <label class="form-label">產品圖片</label>
+                    <label class="form-label">Product Image</label>
                     <div class="image-upload" onclick="document.getElementById('productImage').click()">
                         <div class="upload-placeholder" id="uploadPlaceholder">
                             <div class="upload-icon">📸</div>
-                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.875rem;">點擊上傳圖片</p>
-                            <p style="font-size: 0.75rem; color: var(--text-secondary);">PNG/JPG, 最大 200KB</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.875rem;">Click to upload image</p>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary);">PNG/JPG, Max 200KB</p>
                         </div>
                         <input type="file" id="productImage" class="file-input" accept="image/*">
-                        <img id="imagePreview" class="image-preview" alt="產品預覽">
+                        <img id="imagePreview" class="image-preview" alt="Product Preview">
                     </div>
                 </div>
 
                 <div class="summary-cards">
                     <div class="summary-item">
-                        <div class="summary-label">總材料成本 (Total COGS)</div>
+                        <div class="summary-label">Total Material Cost (Total COGS)</div>
                         <div class="summary-value">
                             <span class="currency">$</span>
                             <span id="totalCogs">0.00</span>
@@ -379,15 +528,15 @@
                     </div>
 
                     <div class="summary-item warning">
-                        <div class="summary-label">成本佔比 (Cost %)</div>
+                        <div class="summary-label">Cost Percentage (Cost %)</div>
                         <div class="summary-value">
                             <span id="costPercentage">0.00</span>
-                            <span style="font-size: 1.25rem;">%</span>
+                            <span style="font-size: 1.125rem;">%</span>
                         </div>
                     </div>
 
                     <div class="summary-item success">
-                        <div class="summary-label">預估毛利 (Gross Profit)</div>
+                        <div class="summary-label">Estimated Gross Profit</div>
                         <div class="summary-value">
                             <span class="currency">$</span>
                             <span id="grossProfit">0.00</span>
@@ -395,20 +544,29 @@
                     </div>
                 </div>
             </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="confirmUpload">
+                    Confirm & Upload
+                </button>
+                <button class="btn btn-secondary" id="cancelButton">
+                    Cancel
+                </button>
+            </div>
         </div>
 
         <div class="table-card">
-            <h2 class="card-title">材料成本明細</h2>
+            <h2 class="card-title">Material Cost Details</h2>
             
             <div class="table-wrapper">
                 <table id="costTable">
                     <thead>
                         <tr>
-                            <th style="width: 15%">SKU</th>
-                            <th style="width: 35%">產品名稱</th>
-                            <th style="width: 15%; text-align: right;">單位成本 ($)</th>
-                            <th style="width: 15%; text-align: center;">用量</th>
-                            <th style="width: 20%; text-align: right;">小計 ($)</th>
+                            <th style="width: 20%">SKU</th>
+                            <th style="width: 35%">Product Name</th>
+                            <th style="width: 15%; text-align: right;">Unit Price ($)</th>
+                            <th style="width: 15%; text-align: center;">Usage</th>
+                            <th style="width: 15%; text-align: right;">Subtotal ($)</th>
                         </tr>
                     </thead>
                     <tbody id="costTableBody">
@@ -420,8 +578,11 @@
 
     <script src="data.js"></script>
     <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI8pm2hTZTGjyZxp_mDJDP1ZHW6XYpPPwuV54SoFEJg6dFLl1_A4PgjH0f_lOTDOXJVA/exec';
+        
         const MATERIALS_DATA = typeof materialData !== 'undefined' ? materialData : [];
         const NUM_ROWS = 10;
+        let currentImageData = null;
 
         function formatCurrency(amount) {
             return parseFloat(amount).toFixed(2);
@@ -429,6 +590,21 @@
 
         function getMaterialData(sku) {
             return MATERIALS_DATA.find(item => item.sku === sku);
+        }
+
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} show`;
+            alertDiv.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alertDiv);
+            
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    alertDiv.classList.remove('show');
+                }, 5000);
+            }
         }
 
         function calculateRow(rowIndex) {
@@ -455,10 +631,16 @@
                     if (costCell) costCell.textContent = formatCurrency(unitCost);
                     if (cogsDisplayCell) cogsDisplayCell.textContent = formatCurrency(cogs);
 
-                    return cogs;
+                    return {
+                        sku: sku,
+                        name: material.name,
+                        unitCost: unitCost,
+                        usage: usage,
+                        cogs: cogs
+                    };
                 }
             }
-            return 0;
+            return null;
         }
 
         function updateSummary() {
@@ -467,7 +649,10 @@
             const sellingPrice = parseFloat(sellingPriceEl ? sellingPriceEl.value : 0) || 0;
 
             for (let i = 1; i <= NUM_ROWS; i++) {
-                totalCogs += calculateRow(i);
+                const rowData = calculateRow(i);
+                if (rowData) {
+                    totalCogs += rowData.cogs;
+                }
             }
 
             const totalCogsEl = document.getElementById('totalCogs');
@@ -506,7 +691,7 @@
                 row.innerHTML = `
                     <td>
                         <select id="sku-select-${i}" class="table-select">
-                            <option value="">選擇 SKU</option>
+                            <option value="">Select SKU</option>
                             ${skuOptions}
                         </select>
                     </td>
@@ -515,7 +700,7 @@
                     <td style="text-align: center;">
                         <input type="number" id="usage-input-${i}" value="0" min="0" step="0.01" class="table-input">
                     </td>
-                    <td id="cogs-display-${i}" class="currency-cell" style="text-align: right; font-size: 1rem;">${formatCurrency(0)}</td>
+                    <td id="cogs-display-${i}" class="currency-cell" style="text-align: right;">${formatCurrency(0)}</td>
                 `;
 
                 tbody.appendChild(row);
@@ -543,7 +728,8 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        previewImage.src = e.target.result;
+                        currentImageData = e.target.result;
+                        previewImage.src = currentImageData;
                         previewImage.classList.add('show');
                         if (uploadPlaceholder) {
                             uploadPlaceholder.classList.add('hide');
@@ -551,6 +737,7 @@
                     };
                     reader.readAsDataURL(file);
                 } else {
+                    currentImageData = null;
                     previewImage.src = '';
                     previewImage.classList.remove('show');
                     if (uploadPlaceholder) {
@@ -558,6 +745,83 @@
                     }
                 }
             });
+        }
+
+        function collectFormData() {
+            const productName = document.getElementById('productName').value;
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value) || 0;
+            const totalCogs = parseFloat(document.getElementById('totalCogs').textContent) || 0;
+            const costPercentage = parseFloat(document.getElementById('costPercentage').textContent) || 0;
+            const grossProfit = parseFloat(document.getElementById('grossProfit').textContent) || 0;
+
+            const materials = [];
+            for (let i = 1; i <= NUM_ROWS; i++) {
+                const rowData = calculateRow(i);
+                materials.push(rowData);
+            }
+
+            return {
+                productName,
+                sellingPrice,
+                totalCogs,
+                costPercentage,
+                grossProfit,
+                imageData: currentImageData,
+                materials
+            };
+        }
+
+        async function uploadToGoogleSheets(data) {
+            try {
+                showAlert('Uploading data to Google Sheets...', 'loading');
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                showAlert('Data uploaded successfully!', 'success');
+                
+                setTimeout(() => {
+                    if (confirm('Upload successful! Clear form and create new entry?')) {
+                        resetForm();
+                    }
+                }, 1000);
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                showAlert('Upload failed: ' + error.message, 'error');
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('sellingPrice').value = '0.00';
+            document.getElementById('productImage').value = '';
+            currentImageData = null;
+            
+            const previewImage = document.getElementById('imagePreview');
+            const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+            if (previewImage) {
+                previewImage.src = '';
+                previewImage.classList.remove('show');
+            }
+            if (uploadPlaceholder) {
+                uploadPlaceholder.classList.remove('hide');
+            }
+
+            for (let i = 1; i <= NUM_ROWS; i++) {
+                const selectEl = document.getElementById(`sku-select-${i}`);
+                const inputEl = document.getElementById(`usage-input-${i}`);
+                if (selectEl) selectEl.value = '';
+                if (inputEl) inputEl.value = '0';
+            }
+
+            updateSummary();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -568,6 +832,29 @@
             if (sellingPriceEl) {
                 sellingPriceEl.addEventListener('input', updateSummary);
             }
+
+            document.getElementById('confirmUpload').addEventListener('click', async () => {
+                const data = collectFormData();
+                
+                if (!data.productName) {
+                    showAlert('Please enter product name!', 'error');
+                    return;
+                }
+                
+                if (data.sellingPrice <= 0) {
+                    showAlert('Please enter valid selling price!', 'error');
+                    return;
+                }
+
+                await uploadToGoogleSheets(data);
+            });
+
+            document.getElementById('cancelButton').addEventListener('click', () => {
+                if (confirm('Are you sure you want to cancel? All unsaved data will be lost.')) {
+                    resetForm();
+                    showAlert('Form cleared successfully', 'success');
+                }
+            });
 
             updateSummary();
         });
