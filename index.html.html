@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>產品成本計算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-xl);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: var(--bg-main);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input.large {
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+
+        .image-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .image-upload-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-upload {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            background: var(--bg-main);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            display: none;
+            box-shadow: var(--shadow-md);
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        .upload-placeholder {
+            display: block;
+        }
+
+        .upload-placeholder.hide {
+            display: none;
+        }
+
+        .summary-cards {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .summary-item {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .summary-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .summary-value .currency {
+            font-size: 1.25rem;
+            opacity: 0.8;
+        }
+
+        .summary-item.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #f97316 100%);
+        }
+
+        .summary-item.success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        }
+
+        .table-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            background: white;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--bg-main);
+        }
+
+        .table-select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .table-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .table-input {
+            width: 80px;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            text-align: right;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .table-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .currency-cell {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        @media (max-width: 1024px) {
+            .image-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍱 產品成本計算器</h1>
+            <p>精準計算每一道料理的成本與利潤</p>
+        </div>
+
+        <div class="main-card">
+            <h2 class="card-title">產品資訊</h2>
+            
+            <div class="form-group">
+                <label class="form-label">產品名稱 (EN)</label>
+                <input type="text" id="productName" class="form-input large" value="Custom Dessert" maxlength="60" placeholder="輸入產品名稱...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">產品售價 ($)</label>
+                <input type="number" id="sellingPrice" class="form-input large" value="15.00" min="0" step="0.01" placeholder="0.00">
+            </div>
+
+            <div class="image-summary-grid">
+                <div class="image-upload-container">
+                    <label class="form-label">產品圖片</label>
+                    <div class="image-upload" onclick="document.getElementById('productImage').click()">
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <div class="upload-icon">📸</div>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.875rem;">點擊上傳圖片</p>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary);">PNG/JPG, 最大 200KB</p>
+                        </div>
+                        <input type="file" id="productImage" class="file-input" accept="image/*">
+                        <img id="imagePreview" class="image-preview" alt="產品預覽">
+                    </div>
+                </div>
+
+                <div class="summary-cards">
+                    <div class="summary-item">
+                        <div class="summary-label">總材料成本 (Total COGS)</div>
+                        <div class="summary-value">
+                            <span class="currency">$</span>
+                            <span id="totalCogs">0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-item warning">
+                        <div class="summary-label">成本佔比 (Cost %)</div>
+                        <div class="summary-value">
+                            <span id="costPercentage">0.00</span>
+                            <span style="font-size: 1.25rem;">%</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-item success">
+                        <div class="summary-label">預估毛利 (Gross Profit)</div>
+                        <div class="summary-value">
+                            <span class="currency">$</span>
+                            <span id="grossProfit">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <h2 class="card-title">材料成本明細</h2>
+            
+            <div class="table-wrapper">
+                <table id="costTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">SKU</th>
+                            <th style="width: 35%">產品名稱</th>
+                            <th style="width: 15%; text-align: right;">單位成本 ($)</th>
+                            <th style="width: 15%; text-align: center;">用量</th>
+                            <th style="width: 20%; text-align: right;">小計 ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="costTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        const MATERIALS_DATA = typeof materialData !== 'undefined' ? materialData : [];
+        const NUM_ROWS = 10;
+
+        function formatCurrency(amount) {
+            return parseFloat(amount).toFixed(2);
+        }
+
+        function getMaterialData(sku) {
+            return MATERIALS_DATA.find(item => item.sku === sku);
+        }
+
+        function calculateRow(rowIndex) {
+            const selectElement = document.getElementById(`sku-select-${rowIndex}`);
+            const usageInput = document.getElementById(`usage-input-${rowIndex}`);
+            const nameCell = document.getElementById(`name-${rowIndex}`);
+            const costCell = document.getElementById(`cost-${rowIndex}`);
+            const cogsDisplayCell = document.getElementById(`cogs-display-${rowIndex}`);
+
+            if (nameCell) nameCell.textContent = '';
+            if (costCell) costCell.textContent = formatCurrency(0);
+            if (cogsDisplayCell) cogsDisplayCell.textContent = formatCurrency(0);
+
+            const sku = selectElement ? selectElement.value : '';
+            const usage = parseFloat(usageInput ? usageInput.value : 0);
+
+            if (sku && usage >= 0) {
+                const material = getMaterialData(sku);
+                if (material) {
+                    const unitCost = material.unitCost;
+                    const cogs = unitCost * usage;
+
+                    if (nameCell) nameCell.textContent = material.name;
+                    if (costCell) costCell.textContent = formatCurrency(unitCost);
+                    if (cogsDisplayCell) cogsDisplayCell.textContent = formatCurrency(cogs);
+
+                    return cogs;
+                }
+            }
+            return 0;
+        }
+
+        function updateSummary() {
+            let totalCogs = 0;
+            const sellingPriceEl = document.getElementById('sellingPrice');
+            const sellingPrice = parseFloat(sellingPriceEl ? sellingPriceEl.value : 0) || 0;
+
+            for (let i = 1; i <= NUM_ROWS; i++) {
+                totalCogs += calculateRow(i);
+            }
+
+            const totalCogsEl = document.getElementById('totalCogs');
+            if (totalCogsEl) {
+                totalCogsEl.textContent = formatCurrency(totalCogs);
+            }
+
+            let costPercentage = 0;
+            if (sellingPrice > 0) {
+                costPercentage = (totalCogs / sellingPrice) * 100;
+            }
+            const costPercentageEl = document.getElementById('costPercentage');
+            if (costPercentageEl) {
+                costPercentageEl.textContent = costPercentage.toFixed(2);
+            }
+
+            const grossProfit = sellingPrice - totalCogs;
+            const grossProfitEl = document.getElementById('grossProfit');
+            if (grossProfitEl) {
+                grossProfitEl.textContent = formatCurrency(grossProfit);
+            }
+        }
+
+        function generateTableRows() {
+            const tbody = document.getElementById('costTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            const sortedMaterials = MATERIALS_DATA.sort((a, b) => a.sku.localeCompare(b.sku));
+            let skuOptions = sortedMaterials.map(m => `<option value="${m.sku}">${m.sku}</option>`).join('');
+
+            for (let i = 1; i <= NUM_ROWS; i++) {
+                const row = document.createElement('tr');
+                row.id = `row-${i}`;
+
+                row.innerHTML = `
+                    <td>
+                        <select id="sku-select-${i}" class="table-select">
+                            <option value="">選擇 SKU</option>
+                            ${skuOptions}
+                        </select>
+                    </td>
+                    <td id="name-${i}" style="color: var(--text-secondary);"></td>
+                    <td id="cost-${i}" class="currency-cell" style="text-align: right;">${formatCurrency(0)}</td>
+                    <td style="text-align: center;">
+                        <input type="number" id="usage-input-${i}" value="0" min="0" step="0.01" class="table-input">
+                    </td>
+                    <td id="cogs-display-${i}" class="currency-cell" style="text-align: right; font-size: 1rem;">${formatCurrency(0)}</td>
+                `;
+
+                tbody.appendChild(row);
+            }
+
+            for (let i = 1; i <= NUM_ROWS; i++) {
+                const selectEl = document.getElementById(`sku-select-${i}`);
+                const inputEl = document.getElementById(`usage-input-${i}`);
+
+                if (selectEl) selectEl.addEventListener('change', updateSummary);
+                if (inputEl) inputEl.addEventListener('input', updateSummary);
+            }
+        }
+
+        function setupImagePreview() {
+            const fileInput = document.getElementById('productImage');
+            const previewImage = document.getElementById('imagePreview');
+            const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+            if (!fileInput || !previewImage) return;
+
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewImage.src = e.target.result;
+                        previewImage.classList.add('show');
+                        if (uploadPlaceholder) {
+                            uploadPlaceholder.classList.add('hide');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    previewImage.src = '';
+                    previewImage.classList.remove('show');
+                    if (uploadPlaceholder) {
+                        uploadPlaceholder.classList.remove('hide');
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            generateTableRows();
+            setupImagePreview();
+
+            const sellingPriceEl = document.getElementById('sellingPrice');
+            if (sellingPriceEl) {
+                sellingPriceEl.addEventListener('input', updateSummary);
+            }
+
+            updateSummary();
+        });
+    </script>
+</body>
+</html>
